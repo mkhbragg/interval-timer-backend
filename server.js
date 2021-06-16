@@ -47,68 +47,32 @@ const db = require("./src/" + data.database);
  * Home route for the app
  *
  * Return the poll options from the database helper script
- * The home route may be called on remix in which case the db needs setup
- *
- * Client can request raw data using a query parameter
  */
 fastify.get("/", async (request, reply) => {
-  /* 
-  Params is the data we pass to the client
-  - SEO values for front-end UI but not for raw data
-  */
-  let params = request.query.raw ? {} : { seo: seo };
-
+  let data = {};
   // Get the available choices from the database
-  const options = await db.getOptions();
-  if (options) {
-    params.optionNames = options.map(choice => choice.language);
-    params.optionCounts = options.map(choice => choice.picks);
-  }
-  // Let the user know if there was a db error
-  else params.error = data.errorMessage;
-
-  // Check in case the data is empty or not setup yet
-  if (options && params.optionNames.length < 1)
-    params.setup = data.setupMessage;
-
-  // ADD PARAMS FROM README NEXT STEPS HERE
-
-  // Send the page options or raw JSON data if the client requested it
-  request.query.raw
-    ? reply.send(params)
-    : reply.view("/src/pages/index.hbs", params);
+  data.options = await db.getOptions();
+  data.error = data.options ? null : data.errorMessage;
+  reply.status(200).send(data);
 });
 
 /**
- * Post route to process user vote
+ * Post route to process vote
  *
  * Retrieve vote from body data
  * Send vote to database helper
  * Return updated list of votes
  */
 fastify.post("/", async (request, reply) => {
-  // We only send seo if the client is requesting the front-end ui
-  let params = request.query.raw ? {} : { seo: seo };
+  let data = {};
 
-  // Flag to indicate we want to show the poll results instead of the poll form
-  params.results = true;
-  let options;
-
-  // We have a vote - send to the db helper to process and return results
-  if (request.body.language) {
-    options = await db.processVote(request.body.language);
-    if (options) {
-      // We send the choices and numbers in parallel arrays
-      params.optionNames = options.map(choice => choice.language);
-      params.optionCounts = options.map(choice => choice.picks);
-    }
-  }
-  params.error = options ? null : data.errorMessage;
-
-  // Return the info to the client
-  request.query.raw
-    ? reply.send(params)
-    : reply.view("/src/pages/index.hbs", params);
+  if (request.body.language) 
+    data.options = await db.processVote(request.body.language);
+  else 
+  
+  data.error = data.options ? null : data.errorMessage;
+  let status = data.error ? 400 : 201;
+  reply.status(status).send(data);
 });
 
 /**
