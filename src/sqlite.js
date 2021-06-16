@@ -26,30 +26,24 @@ dbWrapper
   .then(async dBase => {
     db = dBase;
 
-    // We use try and catch blocks throughout to handle any database errors
     try {
-      // The async / await syntax lets us write the db operations in a way that won't block the app
       if (!exists) {
-        // Database doesn't exist yet - create Choices and Log tables
         await db.run(
           "CREATE TABLE Choices (id INTEGER PRIMARY KEY AUTOINCREMENT, language TEXT, picks INTEGER)"
         );
 
-        // Add default choices to table
         await db.run(
           "INSERT INTO Choices (language, picks) VALUES ('HTML', 0), ('JavaScript', 0), ('CSS', 0)"
         );
 
-        // Log can start empty - we'll insert a new record whenever the user chooses a poll option
         await db.run(
           "CREATE TABLE Log (id INTEGER PRIMARY KEY AUTOINCREMENT, choice TEXT, time STRING)"
         );
       } else {
-        // We have a database already - write Choices records to log for info
         console.log(await db.all("SELECT * from Choices"));
 
-        //If you need to remove a table from the database use this syntax
-        //db.run("DROP TABLE Logs"); //will fail if the table doesn't exist
+        //If you need to remove a table 
+        //db.run("DROP TABLE Logs"); 
       }
     } catch (dbError) {
       console.error(dbError);
@@ -61,12 +55,8 @@ module.exports = {
   
   /**
    * Get the options in the database
-   *
-   * Return everything in the Choices table
-   * Throw an error in case of db connection issues
    */
   getOptions: async () => {
-    // We use a try catch block in case of db errors
     try {
       return await db.all("SELECT * from Choices");
     } catch (dbError) {
@@ -77,28 +67,19 @@ module.exports = {
 
   /**
    * Process a user vote
-   *
-   * Receive the user vote string from server
-   * Add a log entry
-   * Find and update the chosen option
-   * Return the updated list of votes
    */
   processVote: async vote => {
-    // Insert new Log table entry indicating the user choice and timestamp
     try {
-      // Build the user data from the front-end and the current time into the sql query
       await db.run("INSERT INTO Log (choice, time) VALUES (?, ?)", [
         vote,
         new Date().toISOString()
       ]);
 
-      // Update the number of times the choice has been picked by adding one to it
       await db.run(
         "UPDATE Choices SET picks = picks + 1 WHERE language = ?",
         vote
       );
 
-      // Return the choices so far - page will build these into a chart
       return await db.all("SELECT * from Choices");
     } catch (dbError) {
       console.error(dbError);
@@ -107,13 +88,9 @@ module.exports = {
 
   /**
    * Get logs
-   *
-   * Return choice and time fields from all records in the Log table
    */
   getLogs: async () => {
-    // Return most recent 20
     try {
-      // Return the array of log entries to admin page
       return await db.all("SELECT * from Log ORDER BY time DESC LIMIT 20");
     } catch (dbError) {
       console.error(dbError);
@@ -122,19 +99,11 @@ module.exports = {
 
   /**
    * Clear logs and reset votes
-   *
-   * Destroy everything in Log table
-   * Reset votes in Choices table to zero
    */
   clearHistory: async () => {
     try {
-      // Delete the logs
-      await db.run("DELETE from Log");
+      await db.run("DELETE from Log");      await db.run("UPDATE Choices SET picks = 0");
 
-      // Reset the vote numbers
-      await db.run("UPDATE Choices SET picks = 0");
-
-      // Return empty array
       return [];
     } catch (dbError) {
       console.error(dbError);
