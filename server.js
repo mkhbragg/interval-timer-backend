@@ -1,10 +1,7 @@
 /**
  * This is the main server script that provides the API endpoints
  * The script uses the database helper in /src
- * The endpoints retrieve, update, and return data to the page handlebars files
- *
- * The API returns the front-end UI handlebars pages, or
- * Raw json if the client requests it with a query parameter ?raw=json
+ * The endpoints retrieve, update, and return data
  */
 
 // Utilities we need
@@ -17,13 +14,6 @@ const fastify = require("fastify")({
   logger: false
 });
 
-// Setup our static files
-/*
-fastify.register(require("fastify-static"), {
-  root: path.join(__dirname, "public"),
-  prefix: "/" // optional: default '/'
-});*/
-
 // fastify-formbody lets us parse incoming forms
 fastify.register(require("fastify-formbody"));
 
@@ -32,11 +22,11 @@ const data = require("./src/data.json");
 const db = require("./src/" + data.database);
 
 /**
-* We just send an HTML page at the home route
-*/
+ * We just send an HTML page at the home route
+ */
 fastify.get("/", (request, reply) => {
-  const page = fs.readFileSync('./src/pages/index.html');
-  reply.type('text/html').send(page);
+  const page = fs.readFileSync("./src/pages/index.html");
+  reply.type("text/html").send(page);
 });
 
 /**
@@ -60,9 +50,9 @@ fastify.get("/options", async (request, reply) => {
 fastify.post("/option", async (request, reply) => {
   let data = {};
   let err = null;
-  if (request.body.language) 
+  if (request.body.language)
     data.options = await db.processVote(request.body.language);
-  else err = 'No vote received in body!'
+  else err = "No vote received in body!";
   data.error = data.options ? err : data.errorMessage;
   let status = data.error ? 400 : 201;
   reply.status(status).send(data);
@@ -73,7 +63,6 @@ fastify.post("/option", async (request, reply) => {
  */
 fastify.get("/logs", async (request, reply) => {
   let data = {};
-  // Get the log history from the db
   data.optionHistory = await db.getLogs();
   data.error = data.optionHistory ? null : data.errorMessage;
   let status = data.error ? 400 : 201;
@@ -89,24 +78,19 @@ fastify.get("/logs", async (request, reply) => {
  */
 fastify.post("/reset", async (request, reply) => {
   let data = {};
-  
   if (
-    !request.body.key ||
-    request.body.key.length < 1 ||
+    !request.headers.key ||
+    request.headers.key.length < 1 ||
     !process.env.ADMIN_KEY ||
-    request.body.key !== process.env.ADMIN_KEY
+    request.headers.key !== process.env.ADMIN_KEY
   ) {
     console.error("Auth fail");
-
     data.failed = "You entered invalid credentials!";
-
     data.optionHistory = await db.getLogs();
   } else {
     data.optionHistory = await db.clearHistory();
-
     data.error = data.optionHistory ? null : data.errorMessage;
   }
-
   const status = data.failed ? 401 : 200;
   reply.status(status).send(data);
 });
