@@ -18,28 +18,25 @@ const fastify = require("fastify")({
 });
 
 // Setup our static files
+/*
 fastify.register(require("fastify-static"), {
   root: path.join(__dirname, "public"),
   prefix: "/" // optional: default '/'
-});
+});*/
 
 // fastify-formbody lets us parse incoming forms
 fastify.register(require("fastify-formbody"));
-
-/*
-// point-of-view is a templating manager for fastify
-fastify.register(require("point-of-view"), {
-  engine: {
-    handlebars: require("handlebars")
-  }
-});*/
 
 // We use a module for handling database operations in /src
 const data = require("./src/data.json");
 const db = require("./src/" + data.database);
 
+/**
+* We just send an HTML page at the home route
+*/
 fastify.get("/", (request, reply) => {
-  reply.send("./src/pages/index.html");
+  const page = fs.readFileSync('./src/pages/index.html');
+  reply.type('text/html').send(page);
 });
 
 /**
@@ -60,7 +57,7 @@ fastify.get("/options", async (request, reply) => {
  * Send vote to database helper
  * Return updated list of votes
  */
-fastify.post("/", async (request, reply) => {
+fastify.post("/option", async (request, reply) => {
   let data = {};
   let err = null;
   if (request.body.language) 
@@ -92,10 +89,7 @@ fastify.get("/logs", async (request, reply) => {
  */
 fastify.post("/reset", async (request, reply) => {
   let data = {};
-  /* 
-  Authenticate the user request by checking against the env key variable
-  - make sure we have a key in the env and body, and that they match
-  */
+  
   if (
     !request.body.key ||
     request.body.key.length < 1 ||
@@ -104,20 +98,15 @@ fastify.post("/reset", async (request, reply) => {
   ) {
     console.error("Auth fail");
 
-    // Auth failed, return the log data plus a failed flag
     data.failed = "You entered invalid credentials!";
 
-    // Get the log list
     data.optionHistory = await db.getLogs();
   } else {
-    // We have a valid key and can clear the log
     data.optionHistory = await db.clearHistory();
 
-    // Check for errors - method would return false value
     data.error = data.optionHistory ? null : data.errorMessage;
   }
 
-  // Send a 401 if auth failed, 200 otherwise
   const status = data.failed ? 401 : 200;
   reply.status(status).send(data);
 });
