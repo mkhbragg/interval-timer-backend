@@ -17,18 +17,27 @@ const fastify = require("fastify")({
 // fastify-formbody lets us parse incoming forms
 fastify.register(require("fastify-formbody"));
 
-// We use a module for handling database operations in /src
-const data = require("./src/data.json");
-const db = require("./src/" + data.database);
+// Get the database module
+const db = require("sqlite.js");
 
 const errorMessage = "Whoops! Error connecting to the database–please try again!";
 
 /**
- * We just send an HTML page at the home route
+ * We just send some info at the home route
  */
 fastify.get("/", (request, reply) => {
-  const page = fs.readFileSync("./src/pages/index.html");
-  reply.type("text/html").send(page);
+  let data = {
+    title: 'MVP SQLite',
+    intro: 'This is a database-backed API with the following endpoints',
+    endpoints: [
+      'GET /options',
+      'POST /options',
+      'GET /logs',
+      'POST /reset'
+    ],
+    info: 'Check out the README and server.js code'
+  }
+  reply.status(200).send(data);
 });
 
 /**

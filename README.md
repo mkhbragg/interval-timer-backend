@@ -37,6 +37,8 @@ See the `reset` endpoint in `server.js` to learn how this works.
 
 ## Making requests
 
+If you're in the Glitch preview, click __Change URL__ and add `options` to the end to see the first `GET` request.
+
 You can make requests to the API using curl on the terminal or from any API client. Grab your API bsae URL when you remix the project–you can get it by clicking __Show__ > __In a new window__.
 
 The following outline indicates requirements for each endpoint:
