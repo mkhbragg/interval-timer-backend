@@ -26,29 +26,26 @@ fastify.register(require("fastify-static"), {
 // fastify-formbody lets us parse incoming forms
 fastify.register(require("fastify-formbody"));
 
+/*
 // point-of-view is a templating manager for fastify
 fastify.register(require("point-of-view"), {
   engine: {
     handlebars: require("handlebars")
   }
-});
-
-// Load and parse SEO data
-const seo = require("./src/seo.json");
-if (seo.url === "glitch-default") {
-  seo.url = `https://${process.env.PROJECT_DOMAIN}.glitch.me`;
-}
+});*/
 
 // We use a module for handling database operations in /src
 const data = require("./src/data.json");
 const db = require("./src/" + data.database);
 
+fastify.get("/", (request, reply) => {
+  reply.send("./src/pages/index.html");
+});
+
 /**
- * Home route for the app
- *
  * Return the poll options from the database helper script
  */
-fastify.get("/", async (request, reply) => {
+fastify.get("/options", async (request, reply) => {
   let data = {};
   // Get the available choices from the database
   data.options = await db.getOptions();
@@ -65,34 +62,25 @@ fastify.get("/", async (request, reply) => {
  */
 fastify.post("/", async (request, reply) => {
   let data = {};
-
+  let err = null;
   if (request.body.language) 
     data.options = await db.processVote(request.body.language);
-  else 
-  
-  data.error = data.options ? null : data.errorMessage;
+  else err = 'No vote received in body!'
+  data.error = data.options ? err : data.errorMessage;
   let status = data.error ? 400 : 201;
   reply.status(status).send(data);
 });
 
 /**
  * Admin endpoint returns log of votes
- *
- * Send raw json or the admin handlebars page
  */
 fastify.get("/logs", async (request, reply) => {
-  let params = request.query.raw ? {} : { seo: seo };
-
+  let data = {};
   // Get the log history from the db
-  params.optionHistory = await db.getLogs();
-
-  // Let the user know if there's an error
-  params.error = params.optionHistory ? null : data.errorMessage;
-
-  // Send the log list
-  request.query.raw
-    ? reply.send(params)
-    : reply.view("/src/pages/admin.hbs", params);
+  data.optionHistory = await db.getLogs();
+  data.error = data.optionHistory ? null : data.errorMessage;
+  let status = data.error ? 400 : 201;
+  reply.status(status).send(data);
 });
 
 /**
@@ -103,8 +91,7 @@ fastify.get("/logs", async (request, reply) => {
  * If auth is successful, empty the history
  */
 fastify.post("/reset", async (request, reply) => {
-  let params = request.query.raw ? {} : { seo: seo };
-
+  let data = {};
   /* 
   Authenticate the user request by checking against the env key variable
   - make sure we have a key in the env and body, and that they match
@@ -118,24 +105,21 @@ fastify.post("/reset", async (request, reply) => {
     console.error("Auth fail");
 
     // Auth failed, return the log data plus a failed flag
-    params.failed = "You entered invalid credentials!";
+    data.failed = "You entered invalid credentials!";
 
     // Get the log list
-    params.optionHistory = await db.getLogs();
+    data.optionHistory = await db.getLogs();
   } else {
     // We have a valid key and can clear the log
-    params.optionHistory = await db.clearHistory();
+    data.optionHistory = await db.clearHistory();
 
     // Check for errors - method would return false value
-    params.error = params.optionHistory ? null : data.errorMessage;
+    data.error = data.optionHistory ? null : data.errorMessage;
   }
 
   // Send a 401 if auth failed, 200 otherwise
-  const status = params.failed ? 401 : 200;
-  // Send an unauthorized status code if the user credentials failed
-  request.query.raw
-    ? reply.status(status).send(params)
-    : reply.status(status).view("/src/pages/admin.hbs", params);
+  const status = data.failed ? 401 : 200;
+  reply.status(status).send(data);
 });
 
 // Run the server and report out to the logs
