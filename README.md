@@ -14,15 +14,11 @@ The endpoints allow the client to retrieve a list of poll options, submit a new 
 
 ← `server.js`: The Node.js server script for your new site. The JavaScript defines the endpoints in the site API. The API processes requests, connects to the database using the `sqlite` script in `src`, and sends info back to the client.
 
-← `/src/sqlite.js`: The database script handles setting up and connecting to the SQLite database. The `server.js` API endpoints call the functions in the database script to manage the data.
-
-← `/src/data.json`: The data config file includes the database manager script–`server.js` reads the `database` property to import the correct script.
+← `sqlite.js`: The database script handles setting up and connecting to the SQLite database. The `server.js` API endpoints call the functions in the database script to manage the data.
 
 When the app runs, the scripts build the database:
 
 ← `.data/choices.db`: Your database is created and placed in the `.data` folder, a hidden directory whose contents aren’t copied when a project is remixed. You can see the contents of `.data` in the Glitch console by selecting __Tools__ >  __Logs__.
-
-← `src/pages/index.hbs`: The site includes a very minimal homepage that outlines the available endpoints.
 
 ## Setting up your admin key
 

@@ -1,6 +1,6 @@
 /**
  * This is the main server script that provides the API endpoints
- * The script uses the database helper in /src
+ * The script uses the database helper script
  * The endpoints retrieve, update, and return data
  */
 
@@ -18,8 +18,7 @@ const fastify = require("fastify")({
 fastify.register(require("fastify-formbody"));
 
 // Get the database module
-const db = require("sqlite.js");
-
+const db = require("./sqlite.js");
 const errorMessage = "Whoops! Error connecting to the database–please try again!";
 
 /**
@@ -48,6 +47,7 @@ fastify.get("/options", async (request, reply) => {
   // Get the available choices from the database
   data.options = await db.getOptions();
   data.error = data.options ? null : errorMessage;
+  console.log(data);
   reply.status(200).send(data);
 });
 
