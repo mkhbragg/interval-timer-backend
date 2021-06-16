@@ -21,6 +21,8 @@ fastify.register(require("fastify-formbody"));
 const data = require("./src/data.json");
 const db = require("./src/" + data.database);
 
+const errorMessage = "Whoops! Error connecting to the database–please try again!";
+
 /**
  * We just send an HTML page at the home route
  */
@@ -36,7 +38,7 @@ fastify.get("/options", async (request, reply) => {
   let data = {};
   // Get the available choices from the database
   data.options = await db.getOptions();
-  data.error = data.options ? null : data.errorMessage;
+  data.error = data.options ? null : errorMessage;
   reply.status(200).send(data);
 });
 
@@ -53,7 +55,7 @@ fastify.post("/option", async (request, reply) => {
   if (request.body.language)
     data.options = await db.processVote(request.body.language);
   else err = "No vote received in body!";
-  data.error = data.options ? err : data.errorMessage;
+  data.error = data.options ? err : errorMessage;
   let status = data.error ? 400 : 201;
   reply.status(status).send(data);
 });
@@ -64,7 +66,7 @@ fastify.post("/option", async (request, reply) => {
 fastify.get("/logs", async (request, reply) => {
   let data = {};
   data.optionHistory = await db.getLogs();
-  data.error = data.optionHistory ? null : data.errorMessage;
+  data.error = data.optionHistory ? null : errorMessage;
   let status = data.error ? 400 : 201;
   reply.status(status).send(data);
 });
@@ -77,19 +79,19 @@ fastify.get("/logs", async (request, reply) => {
  * If auth is successful, empty the history
  */
 fastify.post("/reset", async (request, reply) => {
-  let data = {};
+  let data = {}; 
   if (
-    !request.headers.key ||
-    request.headers.key.length < 1 ||
+    !request.headers.admin_key ||
+    request.headers.admin_key.length < 1 ||
     !process.env.ADMIN_KEY ||
-    request.headers.key !== process.env.ADMIN_KEY
+    request.headers.admin_key !== process.env.ADMIN_KEY
   ) {
     console.error("Auth fail");
     data.failed = "You entered invalid credentials!";
     data.optionHistory = await db.getLogs();
   } else {
     data.optionHistory = await db.clearHistory();
-    data.error = data.optionHistory ? null : data.errorMessage;
+    data.error = data.optionHistory ? null : errorMessage;
   }
   const status = data.failed ? 401 : 200;
   reply.status(status).send(data);
