@@ -41,6 +41,8 @@ fastify.get("/", (request, reply) => {
 
 /**
  * Return the poll options from the database helper script
+ *
+ * Auth not required
  */
 fastify.get("/options", async (request, reply) => {
   let data = {};
@@ -52,13 +54,34 @@ fastify.get("/options", async (request, reply) => {
 });
 
 /**
+* auth
+*/
+fastify.post("/option", async (request, reply) => {
+  
+});
+
+/**
+* auth
+*/
+fastify.put("/option", async (request, reply) => {
+  
+});
+
+/**
+* auth
+*/
+fastify.delete("/option", async (request, reply) => {
+  
+});
+
+/**
  * Post route to process vote
  *
  * Retrieve vote from body data
  * Send vote to database helper
  * Return updated list of votes
  */
-fastify.post("/option", async (request, reply) => {
+fastify.post("/vote", async (request, reply) => {
   let data = {};
   let err = null;
   if (request.body.language)

@@ -64,6 +64,27 @@ module.exports = {
       console.error(dbError);
     }
   },
+  
+  /**
+  *
+  */
+  addOption: async () => {
+    
+  },
+  
+  /**
+  *
+  */
+  updateOption: async () => {
+    
+  },
+  
+  /**
+  *
+  */
+  deleteOption: async () => {
+    
+  },
 
   /**
    * Process a user vote
@@ -102,7 +123,8 @@ module.exports = {
    */
   clearHistory: async () => {
     try {
-      await db.run("DELETE from Log");      await db.run("UPDATE Choices SET picks = 0");
+      await db.run("DELETE from Log");      
+      await db.run("UPDATE Choices SET picks = 0");
 
       return [];
     } catch (dbError) {
