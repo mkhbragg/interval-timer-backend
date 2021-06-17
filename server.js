@@ -4,18 +4,14 @@
  * The endpoints retrieve, update, and return data
  */
 
-// Utilities we need
-//const fs = require("fs");
-//const path = require("path");
-
 // Require the fastify framework and instantiate it
 const fastify = require("fastify")({
   // Set this to true for detailed logging:
   logger: false
 });
 
-// fastify-formbody lets us parse incoming forms
-fastify.register(require("fastify-formbody")); // required?
+// fastify-formbody lets us parse incoming form data
+fastify.register(require("fastify-formbody"));
 
 // Get the database module
 const db = require("./sqlite.js");
@@ -23,11 +19,11 @@ const errorMessage =
   "Whoops! Error connecting to the database–please try again!";
 
 /**
-* OnRoute hook to list endpoints
-*/
-const routes = { endpoints: { paths: [] } };
+ * OnRoute hook to list endpoints
+ */
+const routes = { endpoints: [] };
 fastify.addHook("onRoute", routeOptions => {
-  routes.endpoints.paths.push(routeOptions.method+" "+routeOptions.path);
+  routes.endpoints.push(routeOptions.method + " " + routeOptions.path);
 });
 
 /**
@@ -37,7 +33,7 @@ fastify.get("/", (request, reply) => {
   let data = {
     title: "MVP SQLite",
     intro: "This is a database-backed API with the following endpoints",
-    endpoints: routes.endpoints
+    routes: routes.endpoints
   };
   reply.status(200).send(data);
 });
@@ -62,7 +58,7 @@ fastify.get("/options", async (request, reply) => {
  * Requires auth
  */
 fastify.post("/option", async (request, reply) => {
-  let data = {auth:true};
+  let data = { auth: true };
   if (!authorized(request.headers.admin_key)) data.auth = false;
   else data.success = await db.addOption(request.body.language);
   let status = data.success ? 201 : data.auth ? 400 : 401;
@@ -70,10 +66,12 @@ fastify.post("/option", async (request, reply) => {
 });
 
 /**
- * auth
+ * Update count for an option
+ *
+ * Requires auth
  */
 fastify.put("/option", async (request, reply) => {
-  let data = {auth:true};
+  let data = { auth: true };
   if (!authorized(request.headers.admin_key)) data.auth = false;
   else
     data.success = await db.updateOption(
@@ -85,15 +83,14 @@ fastify.put("/option", async (request, reply) => {
 });
 
 /**
- * auth
+ * Delete an option
+ *
+ * Requires auth
  */
 fastify.delete("/option", async (request, reply) => {
-  let data = {auth:true};
+  let data = { auth: true };
   if (!authorized(request.headers.admin_key)) data.auth = false;
-  else
-    data.success = await db.deleteOption(
-      request.body.language
-    );
+  else data.success = await db.deleteOption(request.body.language);
   let status = data.success ? 201 : data.auth ? 400 : 401;
   reply.status(status).send(data);
 });
@@ -135,16 +132,16 @@ fastify.get("/logs", async (request, reply) => {
  * If auth is successful, empty the history
  */
 fastify.post("/reset", async (request, reply) => {
-  let data = {};
+  let data = { auth: true };
   if (!authorized(request.headers.admin_key)) {
     console.error("Auth fail");
-    data.failed = "You entered invalid credentials!";
+    data.auth = false;
     data.optionHistory = await db.getLogs();
   } else {
     data.optionHistory = await db.clearHistory();
     data.error = data.optionHistory ? null : errorMessage;
   }
-  const status = data.failed ? 401 : 200;
+  const status = data.auth ? data.optionHistory ? 201 : 400 : 401;
   reply.status(status).send(data);
 });
 

@@ -1,10 +1,10 @@
 # MVP SQLite
 
-This project includes a [Node.js](https://nodejs.org/en/about/) server script that uses a persistent [SQLite](https://www.sqlite.org) database. 
+This project includes a [Node.js](https://nodejs.org/en/about/) server script that uses a persistent [SQLite](https://www.sqlite.org) database.
 
-The endpoints allow the client to retrieve a list of poll options, submit a new vote, retrieve the vote history log, and reset the history (using an admin key you can set this by following the steps below). 🔒
+The endpoints allow the client to retrieve, add, update, and delete poll options. You can also submit a new vote, retrieve the vote history log, and reset the history (using an admin key you can set this by following the steps below). 🔒
 
-_If you have the Glitch editor open showing the preview on the right, click __Change URL__ and add `options` to the end to see the first `GET` request._
+_The home route `/` lists the endpoints in the API. With the Glitch editor open showing the preview on the right, click __Change URL__ and add `options` to the end to see the first `GET` request._
 
 ## What's in this project?
 
