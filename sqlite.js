@@ -1,6 +1,9 @@
 /**
  * Module handles database management
  *
+ * The sample data is for a programming language poll, with language names and a count of votes cast
+ * The database also stores a log of votes cast
+ *
  * Server API calls the methods in here to query and update the SQLite database
  */
 

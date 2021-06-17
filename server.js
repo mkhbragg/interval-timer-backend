@@ -145,6 +145,9 @@ fastify.post("/reset", async (request, reply) => {
   reply.status(status).send(data);
 });
 
+/**
+ * Helper function to authenticate the user key
+ */
 const authorized = key => {
   if (
     !key ||
