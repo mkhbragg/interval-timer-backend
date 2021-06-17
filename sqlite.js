@@ -84,10 +84,21 @@ module.exports = {
   },
   
   /**
-  *
+  * Update picks for a language
   */
-  updateOption: async language => {
-    
+  updateOption: async (language, picks) => {
+    let success = false;
+    try {
+    success = await db.run("Update Choices SET picks = ? WHERE language = ?",
+        picks,
+        language
+      );
+    }
+    catch (dbError){
+      // Database connection error
+      console.error(dbError);
+    }
+    return success.changes>0 ? true : false;
   },
   
   /**

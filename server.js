@@ -19,23 +19,19 @@ fastify.register(require("fastify-formbody")); // required?
 
 // Get the database module
 const db = require("./sqlite.js");
-const errorMessage = "Whoops! Error connecting to the database–please try again!";
+const errorMessage =
+  "Whoops! Error connecting to the database–please try again!";
 
 /**
  * We just send some info at the home route
  */
 fastify.get("/", (request, reply) => {
   let data = {
-    title: 'MVP SQLite',
-    intro: 'This is a database-backed API with the following endpoints',
-    endpoints: [
-      'GET /options',
-      'POST /options',
-      'GET /logs',
-      'POST /reset'
-    ],
-    info: 'Check out the README and server.js code'
-  }
+    title: "MVP SQLite",
+    intro: "This is a database-backed API with the following endpoints",
+    endpoints: ["GET /options", "POST /options", "GET /logs", "POST /reset"],
+    info: "Check out the README and server.js code"
+  };
   reply.status(200).send(data);
 });
 
@@ -54,30 +50,39 @@ fastify.get("/options", async (request, reply) => {
 });
 
 /**
-* Add new option
-*
-* Requires auth
-*/
+ * Add new option
+ *
+ * Requires auth
+ */
 fastify.post("/option", async (request, reply) => {
   let data = {};
-  data.success = await db.addOption(request.body.language);
-  let status = data.success ? 201 : 400;
+  let auth = true;
+  if (!auth(request.headers.admin_key)) auth = false;
+  else data.success = await db.addOption(request.body.language);
+  let status = data.success ? 201 : auth ? 400 : 401;
   reply.status(status).send(data);
 });
 
 /**
-* auth
-*/
+ * auth
+ */
 fastify.put("/option", async (request, reply) => {
-  
+ let data = {};
+  let auth = true;
+  if (!auth(request.headers.admin_key)) auth = false;
+  else
+  data.success = await db.updateOption(
+    request.body.language,
+    request.body.picks
+  );
+  let status = data.success ? 201 : auth ? 400 : 401;
+  reply.status(status).send(data);
 });
 
 /**
-* auth
-*/
-fastify.delete("/option", async (request, reply) => {
-  
-});
+ * auth
+ */
+fastify.delete("/option", async (request, reply) => {});
 
 /**
  * Post route to process vote
@@ -116,13 +121,8 @@ fastify.get("/logs", async (request, reply) => {
  * If auth is successful, empty the history
  */
 fastify.post("/reset", async (request, reply) => {
-  let data = {}; 
-  if (
-    !request.headers.admin_key ||
-    request.headers.admin_key.length < 1 ||
-    !process.env.ADMIN_KEY ||
-    request.headers.admin_key !== process.env.ADMIN_KEY
-  ) {
+  let data = {};
+  if (!auth(request.headers.admin_key)) {
     console.error("Auth fail");
     data.failed = "You entered invalid credentials!";
     data.optionHistory = await db.getLogs();
@@ -133,6 +133,17 @@ fastify.post("/reset", async (request, reply) => {
   const status = data.failed ? 401 : 200;
   reply.status(status).send(data);
 });
+
+let auth = key => {
+  if (
+    !key ||
+    key < 1 ||
+    !process.env.ADMIN_KEY ||
+    key !== process.env.ADMIN_KEY
+  )
+    return false;
+  else return true;
+};
 
 // Run the server and report out to the logs
 fastify.listen(process.env.PORT, function(err, address) {
