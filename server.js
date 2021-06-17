@@ -22,7 +22,13 @@ const db = require("./sqlite.js");
 const errorMessage =
   "Whoops! Error connecting to the database–please try again!";
 
-//TODO onroute hook then list endpoints
+/**
+* OnRoute hook to list endpoints
+*/
+const routes = { endpoints: { paths: [] } };
+fastify.addHook("onRoute", routeOptions => {
+  routes.endpoints.paths.push(routeOptions.method+" "+routeOptions.path);
+});
 
 /**
  * We just send some info at the home route
@@ -31,8 +37,7 @@ fastify.get("/", (request, reply) => {
   let data = {
     title: "MVP SQLite",
     intro: "This is a database-backed API with the following endpoints",
-    endpoints: ["GET /options", "POST /options", "GET /logs", "POST /reset"],
-    info: "Check out the README and server.js code"
+    endpoints: routes.endpoints
   };
   reply.status(200).send(data);
 });
