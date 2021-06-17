@@ -69,8 +69,9 @@ module.exports = {
   *
   */
   addOption: async language => {
+    let success = false;
     try {
-    await db.run("INSERT INTO Choices (language, picks) VALUES (?, ?)", [
+    success = await db.run("INSERT INTO Choices (language, picks) VALUES (?, ?)", [
         language,
         0
       ]);
@@ -79,35 +80,36 @@ module.exports = {
       // Database connection error
       console.error(dbError);
     }
+    return success.changes>0 ? true : false;
   },
   
   /**
   *
   */
-  updateOption: async () => {
+  updateOption: async language => {
     
   },
   
   /**
   *
   */
-  deleteOption: async () => {
+  deleteOption: async language => {
     
   },
 
   /**
    * Process a user vote
    */
-  processVote: async vote => {
+  processVote: async language => {
     try {
       await db.run("INSERT INTO Log (choice, time) VALUES (?, ?)", [
-        vote,
+        language,
         new Date().toISOString()
       ]);
 
       await db.run(
         "UPDATE Choices SET picks = picks + 1 WHERE language = ?",
-        vote
+        language
       );
 
       return await db.all("SELECT * from Choices");

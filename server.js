@@ -59,7 +59,10 @@ fastify.get("/options", async (request, reply) => {
 * Requires auth
 */
 fastify.post("/option", async (request, reply) => {
-  
+  let data = {};
+  data.success = await db.addOption(request.body.language);
+  let status = data.success ? 201 : 400;
+  reply.status(status).send(data);
 });
 
 /**
