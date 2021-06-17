@@ -68,8 +68,17 @@ module.exports = {
   /**
   *
   */
-  addOption: async () => {
-    
+  addOption: async language => {
+    try {
+    await db.run("INSERT INTO Choices (language, picks) VALUES (?, ?)", [
+        language,
+        0
+      ]);
+    }
+    catch (dbError){
+      // Database connection error
+      console.error(dbError);
+    }
   },
   
   /**

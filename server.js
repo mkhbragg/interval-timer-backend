@@ -5,8 +5,8 @@
  */
 
 // Utilities we need
-const fs = require("fs");
-const path = require("path");
+//const fs = require("fs");
+//const path = require("path");
 
 // Require the fastify framework and instantiate it
 const fastify = require("fastify")({
@@ -15,7 +15,7 @@ const fastify = require("fastify")({
 });
 
 // fastify-formbody lets us parse incoming forms
-fastify.register(require("fastify-formbody"));
+fastify.register(require("fastify-formbody")); // required?
 
 // Get the database module
 const db = require("./sqlite.js");
@@ -54,7 +54,9 @@ fastify.get("/options", async (request, reply) => {
 });
 
 /**
-* auth
+* Add new option
+*
+* Requires auth
 */
 fastify.post("/option", async (request, reply) => {
   
