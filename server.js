@@ -22,6 +22,8 @@ const db = require("./sqlite.js");
 const errorMessage =
   "Whoops! Error connecting to the database–please try again!";
 
+//TODO onroute hook then list endpoints
+
 /**
  * We just send some info at the home route
  */
@@ -55,11 +57,10 @@ fastify.get("/options", async (request, reply) => {
  * Requires auth
  */
 fastify.post("/option", async (request, reply) => {
-  let data = {};
-  let auth = true;
-  if (!auth(request.headers.admin_key)) auth = false;
+  let data = {auth:true};
+  if (!authorized(request.headers.admin_key)) data.auth = false;
   else data.success = await db.addOption(request.body.language);
-  let status = data.success ? 201 : auth ? 400 : 401;
+  let status = data.success ? 201 : data.auth ? 400 : 401;
   reply.status(status).send(data);
 });
 
@@ -67,22 +68,30 @@ fastify.post("/option", async (request, reply) => {
  * auth
  */
 fastify.put("/option", async (request, reply) => {
- let data = {};
-  let auth = true;
-  if (!auth(request.headers.admin_key)) auth = false;
+  let data = {auth:true};
+  if (!authorized(request.headers.admin_key)) data.auth = false;
   else
-  data.success = await db.updateOption(
-    request.body.language,
-    request.body.picks
-  );
-  let status = data.success ? 201 : auth ? 400 : 401;
+    data.success = await db.updateOption(
+      request.body.language,
+      request.body.picks
+    );
+  let status = data.success ? 201 : data.auth ? 400 : 401;
   reply.status(status).send(data);
 });
 
 /**
  * auth
  */
-fastify.delete("/option", async (request, reply) => {});
+fastify.delete("/option", async (request, reply) => {
+  let data = {auth:true};
+  if (!authorized(request.headers.admin_key)) data.auth = false;
+  else
+    data.success = await db.deleteOption(
+      request.body.language
+    );
+  let status = data.success ? 201 : data.auth ? 400 : 401;
+  reply.status(status).send(data);
+});
 
 /**
  * Post route to process vote
@@ -122,7 +131,7 @@ fastify.get("/logs", async (request, reply) => {
  */
 fastify.post("/reset", async (request, reply) => {
   let data = {};
-  if (!auth(request.headers.admin_key)) {
+  if (!authorized(request.headers.admin_key)) {
     console.error("Auth fail");
     data.failed = "You entered invalid credentials!";
     data.optionHistory = await db.getLogs();
@@ -134,7 +143,7 @@ fastify.post("/reset", async (request, reply) => {
   reply.status(status).send(data);
 });
 
-let auth = key => {
+const authorized = key => {
   if (
     !key ||
     key < 1 ||

@@ -105,7 +105,17 @@ module.exports = {
   *
   */
   deleteOption: async language => {
-    
+    let success = false;
+    try {
+    success = await db.run("Delete from Choices WHERE language = ?",
+        language
+      );
+    }
+    catch (dbError){
+      // Database connection error
+      console.error(dbError);
+    }
+    return success.changes>0 ? true : false;
   },
 
   /**
