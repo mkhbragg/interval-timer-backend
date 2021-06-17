@@ -1,34 +1,25 @@
 /**
  * This is the main server script that provides the API endpoints
- * The script uses the database helper script
- * The endpoints retrieve, update, and return data
  */
 
-// Require the fastify framework and instantiate it
 const fastify = require("fastify")({
   // Set this to true for detailed logging:
   logger: false
 });
 
-// fastify-formbody lets us parse incoming form data
 fastify.register(require("fastify-formbody"));
 
-// Get the database module
 const db = require("./sqlite.js");
 const errorMessage =
   "Whoops! Error connecting to the database–please try again!";
 
-/**
- * OnRoute hook to list endpoints
- */
+// OnRoute hook to list endpoints
 const routes = { endpoints: [] };
 fastify.addHook("onRoute", routeOptions => {
   routes.endpoints.push(routeOptions.method + " " + routeOptions.path);
 });
 
-/**
- * We just send some info at the home route
- */
+// Just send some info at the home route
 fastify.get("/", (request, reply) => {
   let data = {
     title: "MVP SQLite",
@@ -38,11 +29,7 @@ fastify.get("/", (request, reply) => {
   reply.status(200).send(data);
 });
 
-/**
- * Return the poll options from the database helper script
- *
- * Auth not required
- */
+// Return the poll options from the database helper script
 fastify.get("/options", async (request, reply) => {
   let data = {};
   // Get the available choices from the database
@@ -52,11 +39,7 @@ fastify.get("/options", async (request, reply) => {
   reply.status(200).send(data);
 });
 
-/**
- * Add new option
- *
- * Requires auth
- */
+// Add new option (auth)
 fastify.post("/option", async (request, reply) => {
   let data = { auth: true };
   if (!authorized(request.headers.admin_key)) data.auth = false;
@@ -65,11 +48,7 @@ fastify.post("/option", async (request, reply) => {
   reply.status(status).send(data);
 });
 
-/**
- * Update count for an option
- *
- * Requires auth
- */
+// Update count for an option (auth)
 fastify.put("/option", async (request, reply) => {
   let data = { auth: true };
   if (!authorized(request.headers.admin_key)) data.auth = false;
@@ -82,11 +61,7 @@ fastify.put("/option", async (request, reply) => {
   reply.status(status).send(data);
 });
 
-/**
- * Delete an option
- *
- * Requires auth
- */
+// Delete an option (auth)
 fastify.delete("/option", async (request, reply) => {
   let data = { auth: true };
   if (!authorized(request.headers.admin_key)) data.auth = false;
@@ -95,13 +70,7 @@ fastify.delete("/option", async (request, reply) => {
   reply.status(status).send(data);
 });
 
-/**
- * Post route to process vote
- *
- * Retrieve vote from body data
- * Send vote to database helper
- * Return updated list of votes
- */
+// Post route to process vote
 fastify.post("/vote", async (request, reply) => {
   let data = {};
   let err = null;
@@ -113,9 +82,7 @@ fastify.post("/vote", async (request, reply) => {
   reply.status(status).send(data);
 });
 
-/**
- * Admin endpoint returns log of votes
- */
+// Admin endpoint returns log of votes
 fastify.get("/logs", async (request, reply) => {
   let data = {};
   data.optionHistory = await db.getLogs();
@@ -124,13 +91,7 @@ fastify.get("/logs", async (request, reply) => {
   reply.status(status).send(data);
 });
 
-/**
- * Admin endpoint to empty all logs
- *
- * Requires authorization (see setup instructions in README)
- * If auth fails, return a 401 and the log list
- * If auth is successful, empty the history
- */
+// Admin endpoint to empty all logs (auth)
 fastify.post("/reset", async (request, reply) => {
   let data = { auth: true };
   if (!authorized(request.headers.admin_key)) {
@@ -145,9 +106,7 @@ fastify.post("/reset", async (request, reply) => {
   reply.status(status).send(data);
 });
 
-/**
- * Helper function to authenticate the user key
- */
+// Helper function to authenticate the user key
 const authorized = key => {
   if (
     !key ||

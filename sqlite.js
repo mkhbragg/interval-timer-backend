@@ -1,16 +1,12 @@
 /**
  * Module handles database management
  *
- * The sample data is for a programming language poll, with language names and a count of votes cast
- * The database also stores a log of votes cast
- *
- * Server API calls the methods in here to query and update the SQLite database
+ * The sample data is for a coding language poll with two tables:
+ * Choices: language names + count of votes cast
+ * Log: vote history
  */
 
-// Utilities we need
 const fs = require("fs");
-
-// Initialize the database
 const dbFile = "./.data/choices.db";
 const exists = fs.existsSync(dbFile);
 const sqlite3 = require("sqlite3").verbose();
@@ -45,8 +41,8 @@ dbWrapper
       } else {
         console.log(await db.all("SELECT * from Choices"));
 
-        //If you need to remove a table 
-        //db.run("DROP TABLE Logs"); 
+        //If you need to remove a table
+        //db.run("DROP TABLE Logs");
       }
     } catch (dbError) {
       console.error(dbError);
@@ -55,10 +51,7 @@ dbWrapper
 
 // Our server script will call these methods to connect to the db
 module.exports = {
-  
-  /**
-   * Get the options in the database
-   */
+  // Get the options in the database
   getOptions: async () => {
     try {
       return await db.all("SELECT * from Choices");
@@ -67,63 +60,51 @@ module.exports = {
       console.error(dbError);
     }
   },
-  
-  /**
-  *
-  */
+
+  // Add new option
   addOption: async language => {
     let success = false;
     try {
-    success = await db.run("INSERT INTO Choices (language, picks) VALUES (?, ?)", [
-        language,
-        0
-      ]);
-    }
-    catch (dbError){
-      // Database connection error
+      success = await db.run(
+        "INSERT INTO Choices (language, picks) VALUES (?, ?)",
+        [language, 0]
+      );
+    } catch (dbError) {
       console.error(dbError);
     }
-    return success.changes>0 ? true : false;
+    return success.changes > 0 ? true : false;
   },
-  
-  /**
-  * Update picks for a language
-  */
+
+  // Update picks for a language
   updateOption: async (language, picks) => {
     let success = false;
     try {
-    success = await db.run("Update Choices SET picks = ? WHERE language = ?",
+      success = await db.run(
+        "Update Choices SET picks = ? WHERE language = ?",
         picks,
         language
       );
-    }
-    catch (dbError){
-      // Database connection error
+    } catch (dbError) {
       console.error(dbError);
     }
-    return success.changes>0 ? true : false;
+    return success.changes > 0 ? true : false;
   },
-  
-  /**
-  *
-  */
+
+  // Remove option
   deleteOption: async language => {
     let success = false;
     try {
-    success = await db.run("Delete from Choices WHERE language = ?",
+      success = await db.run(
+        "Delete from Choices WHERE language = ?",
         language
       );
-    }
-    catch (dbError){
-      // Database connection error
+    } catch (dbError) {
       console.error(dbError);
     }
-    return success.changes>0 ? true : false;
+    return success.changes > 0 ? true : false;
   },
 
-  /**
-   * Process a user vote
-   */
+  // Process a user vote
   processVote: async language => {
     try {
       await db.run("INSERT INTO Log (choice, time) VALUES (?, ?)", [
@@ -142,9 +123,7 @@ module.exports = {
     }
   },
 
-  /**
-   * Get logs
-   */
+  // Get logs
   getLogs: async () => {
     try {
       return await db.all("SELECT * from Log ORDER BY time DESC LIMIT 20");
@@ -153,12 +132,10 @@ module.exports = {
     }
   },
 
-  /**
-   * Clear logs and reset votes
-   */
+  // Clear logs and reset votes
   clearHistory: async () => {
     try {
-      await db.run("DELETE from Log");      
+      await db.run("DELETE from Log");
       await db.run("UPDATE Choices SET picks = 0");
 
       return [];
