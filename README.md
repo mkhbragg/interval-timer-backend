@@ -4,6 +4,8 @@ This project includes a [Node.js](https://nodejs.org/en/about/) server script th
 
 The endpoints allow the client to retrieve a list of poll options, submit a new vote, retrieve the vote history log, and reset the history (using an admin key you can set this by following the steps below). 🔒
 
+_If you have the Glitch editor open showing the preview on the right, click __Change URL__ and add `options` to the end to see the first `GET` request._
+
 ## What's in this project?
 
 ← `README.md`: That’s this file, where you can tell people what your cool website does and how you built it.
@@ -32,8 +34,6 @@ To set your app up to allow clearing the history:
 See the `reset` endpoint in `server.js` to learn how this works.
 
 ## Making requests
-
-If you're in the Glitch preview, click __Change URL__ and add `options` to the end to see the first `GET` request.
 
 You can make requests to the API using curl on the terminal or from any API client. Grab your API bsae URL when you remix the project–you can get it by clicking __Show__ > __In a new window__.
 
