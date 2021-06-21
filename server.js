@@ -34,11 +34,11 @@ fastify.get("/", (request, reply) => {
 // Return the poll options from the database helper script - no auth
 fastify.get("/options", async (request, reply) => {
   let data = {};
-  // Get the available choices from the database
   data.options = await db.getOptions();
-  data.error = data.options ? null : errorMessage;
-  console.log(data);
-  reply.status(200).send(data);
+  console.log(data.options);
+  if(!data.options) data.error = errorMessage;
+  let status = data.error ? 400 : 200;
+  reply.status(status).send(data);
 });
 
 // Add new option (auth)

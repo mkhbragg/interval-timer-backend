@@ -59,6 +59,7 @@ module.exports = {
   addOption: async language => {
     let success = false;
     try {
+      // NOTE: This will insert duplicates as it doesn't check if language already exists
       success = await db.run(
         "INSERT INTO Choices (language, picks) VALUES (?, ?)",
         [language, 0]
