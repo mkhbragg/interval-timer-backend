@@ -33,7 +33,7 @@ To set your app up to allow clearing the history:
 
 ## Making requests
 
-You can make requests to the API using curl on the terminal or from any API client. Grab your API base URL when you remix the project–you can get it by clicking __Show__ > __In a new window__.
+You can make requests to the API using curl on the terminal or from any API client. Grab your API base URL when you remix the project–you can get it by clicking __Show__.
 
 The following outline indicates requirements for each endpoint:
 
