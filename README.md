@@ -1,8 +1,8 @@
 # MVP SQLite
 
-This project includes a [Node.js](https://nodejs.org/en/about/) server script that uses a persistent [SQLite](https://www.sqlite.org) database. The database stores sample data for coding language preferences, each one with a name and number of votes.
+This project includes a [Node.js](https://nodejs.org/en/about/) server script that uses a persistent [SQLite](https://www.sqlite.org) database.
 
-The endpoints allow the client to retrieve, add, update, and delete options, using an admin key you can set in the `.env`.
+The database stores sample data for coding language preferences, each one with a name and number of votes. The endpoints allow the client to retrieve, add, update, and delete options, using an admin key you can set in the `.env`.
 
 _The home route `/` lists the endpoints in the API. With the Glitch editor open showing the preview on the right, click __Change URL__ and add `options` to the end to see the first `GET` request._
 
@@ -33,17 +33,17 @@ To set your app up to allow clearing the history:
 
 ## Making requests
 
-You can make requests to the API using curl on the terminal or from any API client. Grab your API bsae URL when you remix the project–you can get it by clicking __Show__ > __In a new window__.
+You can make requests to the API using curl on the terminal or from any API client. Grab your API base URL when you remix the project–you can get it by clicking __Show__ > __In a new window__.
 
 The following outline indicates requirements for each endpoint:
 
 * `GET /options`
 * `POST /option` 🔒
-  * Include a request __Body__ type `application/x-www-form-urlencoded` containing a key named `language`
+  * Include a request __Body__ with a property named `language`
 * `PUT /option` 🔒
-  * Include a request __Body__ type `application/x-www-form-urlencoded` containing keys named `language` and `picks` indicating the name of the option to update and the number to update the votes with (e.g. `JavaScript` and `9`)
+  * Include a request __Body__ with properties `language` (name of option) and `picks` (number to set), e.g. `JavaScript` and `9`
 * `DELETE /option` 🔒
-  * Include a request __Body__ type `application/x-www-form-urlencoded` containing a key named `language`
+  * Include a request __Body__ containing a property named `language`
 
 🔒 For endpoints requiring auth:
 * Include your admin key value from the `.env` in a request header named `admin_key`.

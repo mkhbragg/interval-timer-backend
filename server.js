@@ -1,5 +1,7 @@
 /**
  * This is the main server script that provides the API endpoints
+ *
+ * Uses sqlite.js to connect to db
  */
 
 const fastify = require("fastify")({
