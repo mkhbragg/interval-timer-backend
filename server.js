@@ -43,35 +43,31 @@ fastify.get("/options", async (request, reply) => {
 
 // Add new option (auth)
 fastify.post("/option", async (request, reply) => {
-  let data = { auth: true };
-  if (!authorized(request.headers.admin_key)) data.auth = false;
-  if(!request.body || !request.body.language) data.success = false;
-  else data.success = await db.addOption(request.body.language);
-  const status = data.success ? 201 : data.auth ? 400 : 401;
+  let data = {};
+  const auth = authorized(request.headers.admin_key);
+  if(!auth || !request.body || !request.body.language) data.success = false;
+  else if(auth) data.success = await db.addOption(request.body.language);
+  const status = data.success ? 201 : auth ? 400 : 401;
   reply.status(status).send(data);
 });
 
 // Update count for an option (auth)
 fastify.put("/option", async (request, reply) => { 
-  let data = { auth: true };
-  if (!authorized(request.headers.admin_key)) data.auth = false;
-  if(!request.body || !request.body.language || !request.body.picks) data.success = false;
-  else
-    data.success = await db.updateOption(
-      request.body.language,
-      request.body.picks
-    ); 
-  const status = data.success ? 201 : data.auth ? 400 : 401;
+  let data = {};
+  const auth = authorized(request.headers.admin_key);
+  if(!auth || !request.body || !request.body.language || !request.body.picks) data.success = false;
+  else data.success = await db.updateOption(request.body.language, request.body.picks); 
+  const status = data.success ? 201 : auth ? 400 : 401;
   reply.status(status).send(data);
 });
 
 // Delete an option (auth)
 fastify.delete("/option", async (request, reply) => {
-  let data = { auth: true };
-  if (!authorized(request.headers.admin_key)) data.auth = false;
-  if(!request.body || !request.body.language) data.success = false;
+  let data = {};
+  const auth = authorized(request.headers.admin_key);
+  if(!auth || !request.body || !request.body.language) data.success = false;
   else data.success = await db.deleteOption(request.body.language);
-  const status = data.success ? 201 : data.auth ? 400 : 401;
+  const status = data.success ? 201 : auth ? 400 : 401;
   reply.status(status).send(data);
 });
 
