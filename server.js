@@ -50,7 +50,7 @@ fastify.post("/option", async (request, reply) => {
 
 // Update count for an option (auth)
 fastify.put("/option", async (request, reply) => { 
-  let data = { auth: true }; console.log(request.headers.admin_key)
+  let data = { auth: true };
   if (!authorized(request.headers.admin_key)) data.auth = false;
   else
     data.success = await db.updateOption(
