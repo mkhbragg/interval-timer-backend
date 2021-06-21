@@ -1,8 +1,8 @@
 # MVP SQLite
 
-This project includes a [Node.js](https://nodejs.org/en/about/) server script that uses a persistent [SQLite](https://www.sqlite.org) database. The database stores sample data for a user poll, with a table for options and a table for logging votes cast.
+This project includes a [Node.js](https://nodejs.org/en/about/) server script that uses a persistent [SQLite](https://www.sqlite.org) database. The database stores sample data for coding language preferences, each one with a name and number of votes.
 
-The endpoints allow the client to retrieve, add, update, and delete poll options. You can also submit a new vote, retrieve the vote history log, and reset the history (using an admin key you can set this by following the steps below). 
+The endpoints allow the client to retrieve, add, update, and delete options, using an admin key you can set in the `.env`.
 
 _The home route `/` lists the endpoints in the API. With the Glitch editor open showing the preview on the right, click __Change URL__ and add `options` to the end to see the first `GET` request._
 
@@ -24,14 +24,12 @@ When the app runs, the scripts build the database:
 
 ## Setting up your admin key
 
-The API allows the user to clear the database of votes–but only if a valid key is provided. This is a simplified example of auth that checks if the user entered key matches the one in the `.env`.
+The API allows the user to update data if a valid key is provided. This is a simplified example of auth that checks if the user entered key matches the one in the `.env`.
 
 To set your app up to allow clearing the history:
 
 * In your `.env` file, find the variable named `ADMIN_KEY` and give it a text string as a value.
 * Pass the value with requests to the API in a header named `admin_key`.
-
-See the `reset` endpoint in `server.js` to learn how this works.
 
 ## Making requests
 

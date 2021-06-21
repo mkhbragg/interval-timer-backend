@@ -102,45 +102,5 @@ module.exports = {
       console.error(dbError);
     }
     return success.changes > 0 ? true : false;
-  },
-
-  // Process a user vote
-  processVote: async language => {
-    try {
-      await db.run("INSERT INTO Log (choice, time) VALUES (?, ?)", [
-        language,
-        new Date().toISOString()
-      ]);
-
-      await db.run(
-        "UPDATE Choices SET picks = picks + 1 WHERE language = ?",
-        language
-      );
-
-      return await db.all("SELECT * from Choices");
-    } catch (dbError) {
-      console.error(dbError);
-    }
-  },
-
-  // Get logs
-  getLogs: async () => {
-    try {
-      return await db.all("SELECT * from Log ORDER BY time DESC LIMIT 20");
-    } catch (dbError) {
-      console.error(dbError);
-    }
-  },
-
-  // Clear logs and reset votes
-  clearHistory: async () => {
-    try {
-      await db.run("DELETE from Log");
-      await db.run("UPDATE Choices SET picks = 0");
-
-      return [];
-    } catch (dbError) {
-      console.error(dbError);
-    }
   }
 };

@@ -70,42 +70,6 @@ fastify.delete("/option", async (request, reply) => {
   reply.status(status).send(data);
 });
 
-// Post route to process vote
-fastify.post("/vote", async (request, reply) => {
-  let data = {};
-  let err = null;
-  if (request.body.language)
-    data.options = await db.processVote(request.body.language);
-  else err = "No vote received in body!";
-  data.error = data.options ? err : errorMessage;
-  let status = data.error ? 400 : 201;
-  reply.status(status).send(data);
-});
-
-// Admin endpoint returns log of votes
-fastify.get("/logs", async (request, reply) => {
-  let data = {};
-  data.optionHistory = await db.getLogs();
-  data.error = data.optionHistory ? null : errorMessage;
-  let status = data.error ? 400 : 201;
-  reply.status(status).send(data);
-});
-
-// Admin endpoint to empty all logs (auth)
-fastify.post("/reset", async (request, reply) => {
-  let data = { auth: true };
-  if (!authorized(request.headers.admin_key)) {
-    console.error("Auth fail");
-    data.auth = false;
-    data.optionHistory = await db.getLogs();
-  } else {
-    data.optionHistory = await db.clearHistory();
-    data.error = data.optionHistory ? null : errorMessage;
-  }
-  const status = data.auth ? data.optionHistory ? 201 : 400 : 401;
-  reply.status(status).send(data);
-});
-
 // Helper function to authenticate the user key
 const authorized = key => {
   if (
