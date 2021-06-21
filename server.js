@@ -49,14 +49,14 @@ fastify.post("/option", async (request, reply) => {
 });
 
 // Update count for an option (auth)
-fastify.put("/option", async (request, reply) => {
-  let data = { auth: true };
+fastify.put("/option", async (request, reply) => { 
+  let data = { auth: true }; console.log(request.headers.admin_key)
   if (!authorized(request.headers.admin_key)) data.auth = false;
   else
     data.success = await db.updateOption(
       request.body.language,
       request.body.picks
-    );
+    ); 
   let status = data.success ? 201 : data.auth ? 400 : 401;
   reply.status(status).send(data);
 });
