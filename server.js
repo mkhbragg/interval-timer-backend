@@ -22,14 +22,14 @@ fastify.addHook("onRoute", routeOptions => {
 // Just send some info at the home route
 fastify.get("/", (request, reply) => {
   let data = {
-    title: "MVP SQLite",
+    title: "Minimal SQLite",
     intro: "This is a database-backed API with the following endpoints",
     routes: routes.endpoints
   };
   reply.status(200).send(data);
 });
 
-// Return the poll options from the database helper script
+// Return the poll options from the database helper script - no auth
 fastify.get("/options", async (request, reply) => {
   let data = {};
   // Get the available choices from the database

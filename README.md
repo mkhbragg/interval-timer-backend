@@ -44,10 +44,6 @@ The following outline indicates requirements for each endpoint:
   * Include a request __Body__ type `application/x-www-form-urlencoded` containing keys named `language` and `picks` indicating the name of the option to update and the number to update the votes with (e.g. `JavaScript` and `9`)
 * `DELETE /option` 🔒
   * Include a request __Body__ type `application/x-www-form-urlencoded` containing a key named `language`
-* `POST /vote`
-  * Include a request __Body__ type `application/x-www-form-urlencoded` containing a key named `language` and a value matching any option from the list retrieved via the `GET` endpoint
-* `GET /logs`
-* `POST /reset` 🔒
 
 🔒 For endpoints requiring auth:
 * Include your admin key value from the `.env` in a request header named `admin_key`.

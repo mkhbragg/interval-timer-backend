@@ -1,9 +1,8 @@
 /**
  * Module handles database management
  *
- * The sample data is for a coding language poll with two tables:
- * Choices: language names + count of votes cast
- * Log: vote history
+ * The sample data is for a coding language poll with one table:
+ * Choices: language names + count of votes cast for each
  */
 
 const fs = require("fs");
@@ -35,33 +34,28 @@ dbWrapper
           "INSERT INTO Choices (language, picks) VALUES ('HTML', 0), ('JavaScript', 0), ('CSS', 0)"
         );
 
-        await db.run(
-          "CREATE TABLE Log (id INTEGER PRIMARY KEY AUTOINCREMENT, choice TEXT, time STRING)"
-        );
       } else {
         console.log(await db.all("SELECT * from Choices"));
 
-        //If you need to remove a table
-        //db.run("DROP TABLE Logs");
       }
     } catch (dbError) {
       console.error(dbError);
     }
   });
 
-// Our server script will call these methods to connect to the db
+// Server script calls these methods to connect to the db
 module.exports = {
+  
   // Get the options in the database
   getOptions: async () => {
     try {
       return await db.all("SELECT * from Choices");
     } catch (dbError) {
-      // Database connection error
       console.error(dbError);
     }
   },
 
-  // Add new option
+  // Add new option initially set to zero
   addOption: async language => {
     let success = false;
     try {
