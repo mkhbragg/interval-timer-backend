@@ -3,6 +3,8 @@
  *
  * The sample data is for a coding language poll with one table:
  * Choices: language names + count of votes cast for each
+ *
+ * NOTE: Post, update, and delete methods do not check if record exists
  */
 
 const fs = require("fs");
@@ -59,7 +61,6 @@ module.exports = {
   addOption: async language => {
     let success = false;
     try {
-      // NOTE: This will insert duplicates as it doesn't check if language already exists
       success = await db.run(
         "INSERT INTO Choices (language, picks) VALUES (?, ?)",
         [language, 0]

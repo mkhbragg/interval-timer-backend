@@ -48,6 +48,8 @@ The following outline indicates requirements for each endpoint:
 🔒 For endpoints requiring auth:
 * Include your admin key value from the `.env` in a request header named `admin_key`.
 
+_Note that the database management in this project is very minimal and doesn't e.g. check for duplicates / existing records before attempting updates._
+
 ![Glitch](https://cdn.glitch.com/a9975ea6-8949-4bab-addb-8a95021dc2da%2FLogo_Color.svg?v=1602781328576)
 
 ## You built this with Glitch!

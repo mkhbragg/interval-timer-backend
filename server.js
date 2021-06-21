@@ -45,6 +45,7 @@ fastify.get("/options", async (request, reply) => {
 fastify.post("/option", async (request, reply) => {
   let data = { auth: true };
   if (!authorized(request.headers.admin_key)) data.auth = false;
+  if(!request.body || !request.body.language) data.success = false;
   else data.success = await db.addOption(request.body.language);
   let status = data.success ? 201 : data.auth ? 400 : 401;
   reply.status(status).send(data);
@@ -54,6 +55,7 @@ fastify.post("/option", async (request, reply) => {
 fastify.put("/option", async (request, reply) => { 
   let data = { auth: true };
   if (!authorized(request.headers.admin_key)) data.auth = false;
+  if(!request.body || !request.body.language || !request.body.picks) data.success = false;
   else
     data.success = await db.updateOption(
       request.body.language,
@@ -67,6 +69,7 @@ fastify.put("/option", async (request, reply) => {
 fastify.delete("/option", async (request, reply) => {
   let data = { auth: true };
   if (!authorized(request.headers.admin_key)) data.auth = false;
+  if(!request.body || !request.body.language) data.success = false;
   else data.success = await db.deleteOption(request.body.language);
   let status = data.success ? 201 : data.auth ? 400 : 401;
   reply.status(status).send(data);
