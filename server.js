@@ -65,8 +65,8 @@ fastify.put("/option", async (request, reply) => {
 fastify.delete("/option", async (request, reply) => {
   let data = {};
   const auth = authorized(request.headers.admin_key);
-  if(!auth || !request.body || !request.body.language) data.success = false;
-  else data.success = await db.deleteOption(request.body.language);
+  if(!auth || !request.query || !request.query.language) data.success = false;
+  else data.success = await db.deleteOption(request.query.language);
   const status = data.success ? 201 : auth ? 400 : 401;
   reply.status(status).send(data);
 });

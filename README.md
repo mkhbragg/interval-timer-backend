@@ -43,7 +43,7 @@ The following outline indicates requirements for each endpoint:
 * `PUT /option` 🔒
   * Include a request __Body__ with properties `language` (name of option) and `picks` (number to set), e.g. `JavaScript` and `9`
 * `DELETE /option` 🔒
-  * Include a request __Body__ containing a property named `language`
+  * Include a query parameter named `language`
 
 🔒 For endpoints requiring auth:
 * Include your admin key value from the `.env` in a request header named `admin_key`.
