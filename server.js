@@ -23,7 +23,7 @@ fastify.addHook("onRoute", routeOptions => {
 
 // Just send some info at the home route
 fastify.get("/", (request, reply) => {
-  let data = {
+  const data = {
     title: "Minimal SQLite",
     intro: "This is a database-backed API with the following endpoints",
     routes: routes.endpoints
@@ -37,7 +37,7 @@ fastify.get("/options", async (request, reply) => {
   data.options = await db.getOptions();
   console.log(data.options);
   if(!data.options) data.error = errorMessage;
-  let status = data.error ? 400 : 200;
+  const status = data.error ? 400 : 200;
   reply.status(status).send(data);
 });
 
@@ -47,7 +47,7 @@ fastify.post("/option", async (request, reply) => {
   if (!authorized(request.headers.admin_key)) data.auth = false;
   if(!request.body || !request.body.language) data.success = false;
   else data.success = await db.addOption(request.body.language);
-  let status = data.success ? 201 : data.auth ? 400 : 401;
+  const status = data.success ? 201 : data.auth ? 400 : 401;
   reply.status(status).send(data);
 });
 
@@ -61,7 +61,7 @@ fastify.put("/option", async (request, reply) => {
       request.body.language,
       request.body.picks
     ); 
-  let status = data.success ? 201 : data.auth ? 400 : 401;
+  const status = data.success ? 201 : data.auth ? 400 : 401;
   reply.status(status).send(data);
 });
 
@@ -71,7 +71,7 @@ fastify.delete("/option", async (request, reply) => {
   if (!authorized(request.headers.admin_key)) data.auth = false;
   if(!request.body || !request.body.language) data.success = false;
   else data.success = await db.deleteOption(request.body.language);
-  let status = data.success ? 201 : data.auth ? 400 : 401;
+  const status = data.success ? 201 : data.auth ? 400 : 401;
   reply.status(status).send(data);
 });
 
