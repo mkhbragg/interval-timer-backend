@@ -1,4 +1,4 @@
-# MVP SQLite
+# Hello SQLite (mvp)
 
 This project includes a [Node.js](https://nodejs.org/en/about/) server script that uses a persistent [SQLite](https://www.sqlite.org) database.
 

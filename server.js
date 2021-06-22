@@ -25,7 +25,7 @@ fastify.addHook("onRoute", routeOptions => {
 fastify.get("/", (request, reply) => {
   console.log(process.env.PROJECT_ID + " "+process.env.PROJECT_REMIX_CHAIN)
   const data = {
-    title: "Minimal SQLite",
+    title: "Hello SQLite (mvp)",
     intro: "This is a database-backed API with the following endpoints",
     routes: routes.endpoints
   };
