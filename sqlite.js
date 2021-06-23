@@ -8,14 +8,15 @@
  */
 
 const fs = require("fs");
-const dbFile = "./.data/choices.db";
+const dbFile = "./.data/chat.db";
 const exists = fs.existsSync(dbFile);
 const sqlite3 = require("sqlite3").verbose();
 const dbWrapper = require("sqlite");
 const faker = require("faker"); 
+/*
 let i;
 for(i=0; i<10; i++)
-console.log(faker.commerce.productName()+" - "+faker.company.catchPhrase()+" - "+faker.hacker.phrase()+" - "+faker.git.commitMessage())
+console.log(faker.commerce.productName()+" - "+faker.company.catchPhrase()+" - "+faker.hacker.phrase()+" - "+faker.git.commitEntry())*/
 let db;
 
 /* 
@@ -31,19 +32,23 @@ dbWrapper
     db = dBase;
 
     try {
-      if (!exists) {
+//      if (!exists) {
+      await db.run(
+          "DROP TABLE Messages"
+        );
         await db.run(
-          "CREATE TABLE Choices (id INTEGER PRIMARY KEY AUTOINCREMENT, language TEXT, picks INTEGER)"
+          "CREATE TABLE Messages (id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT)"
         );
 
         await db.run(
-          "INSERT INTO Choices (language, picks) VALUES ('HTML', 0), ('JavaScript', 0), ('CSS', 0)"
+          "INSERT INTO Messages (message) VALUES (?)",
+        [faker.hacker.phrase()], [faker.hacker.phrase()], [faker.hacker.phrase()]
         );
-
+/*
       } else {
-        console.log(await db.all("SELECT * from Choices"));
+        console.log(await db.all("SELECT * from Messages"));
 
-      }
+      }*/
     } catch (dbError) {
       console.error(dbError);
     }
