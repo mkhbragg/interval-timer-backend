@@ -32,31 +32,31 @@ fastify.get("/", (request, reply) => {
 });
 
 // Return the poll options from the database helper script - no auth
-fastify.get("/options", async (request, reply) => {
+fastify.get("/messages", async (request, reply) => {
   let data = {};
-  data.options = await db.getOptions();
-  console.log(data.options);
-  if(!data.options) data.error = errorMessage;
+  data.chat = await db.getMessages();
+  console.log(data.chat);
+  if(!data.chat) data.error = errorMessage;
   const status = data.error ? 400 : 200;
   reply.status(status).send(data);
 });
 
 // Add new option (auth)
-fastify.post("/option", async (request, reply) => {
+fastify.post("/message", async (request, reply) => {
   let data = {};
   const auth = authorized(request.headers.admin_key);
-  if(!auth || !request.body || !request.body.language) data.success = false;
-  else if(auth) data.success = await db.addOption(request.body.language);
+  if(!auth || !request.body || !request.body.message) data.success = false;
+  else if(auth) data.success = await db.addMessage(request.body.message);
   const status = data.success ? 201 : auth ? 400 : 401;
   reply.status(status).send(data);
 });
 
 // Update count for an option (auth)
-fastify.put("/option", async (request, reply) => { 
+fastify.put("/message", async (request, reply) => { 
   let data = {};
   const auth = authorized(request.headers.admin_key);
-  if(!auth || !request.body || !request.body.language || !request.body.picks) data.success = false;
-  else data.success = await db.updateOption(request.body.language, request.body.picks); 
+  if(!auth || !request.body || !request.body.id || !request.body.message) data.success = false;
+  else data.success = await db.updateMessage(request.body.id, request.body.message); 
   const status = data.success ? 201 : auth ? 400 : 401;
   reply.status(status).send(data);
 });

@@ -1,8 +1,8 @@
 /**
  * Module handles database management
  *
- * The sample data is for a coding language poll with one table:
- * Choices: language names + count of votes cast for each
+ * The sample data is for a chat log with one table:
+ * Messages: id + message text
  *
  * NOTE: Post, update, and delete methods do not check if record exists
  */
@@ -12,11 +12,7 @@ const dbFile = "./.data/chat.db";
 const exists = fs.existsSync(dbFile);
 const sqlite3 = require("sqlite3").verbose();
 const dbWrapper = require("sqlite");
-const faker = require("faker"); 
-/*
-let i;
-for(i=0; i<10; i++)
-console.log(faker.commerce.productName()+" - "+faker.company.catchPhrase()+" - "+faker.hacker.phrase()+" - "+faker.git.commitEntry())*/
+const faker = require("faker");
 let db;
 
 /* 
@@ -32,23 +28,19 @@ dbWrapper
     db = dBase;
 
     try {
-//      if (!exists) {
-      await db.run(
-          "DROP TABLE Messages"
-        );
+      if (!exists) {
+        await db.run("DROP TABLE Messages");
         await db.run(
           "CREATE TABLE Messages (id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT)"
         );
-
+        let records = [];
+        for (let r = 0; r < 5; r++) records.push(faker.hacker.phrase());
         await db.run(
-          "INSERT INTO Messages (message) VALUES (?)",
-        [faker.hacker.phrase()], [faker.hacker.phrase()], [faker.hacker.phrase()]
+          "INSERT INTO Messages (message) VALUES (?),(?),(?),(?),(?)",
+          records
         );
-/*
-      } else {
-        console.log(await db.all("SELECT * from Messages"));
-
-      }*/
+      }
+      console.log(await db.all("SELECT * from Messages"));
     } catch (dbError) {
       console.error(dbError);
     }
@@ -56,23 +48,22 @@ dbWrapper
 
 // Server script calls these methods to connect to the db
 module.exports = {
-  
-  // Get the options in the database
-  getOptions: async () => {
+  // Get the messages in the database
+  getMessages: async () => {
     try {
-      return await db.all("SELECT * from Choices");
+      return await db.all("SELECT * from Messages");
     } catch (dbError) {
       console.error(dbError);
     }
   },
 
   // Add new option initially set to zero
-  addOption: async language => {
+  addMessage: async message => {
     let success = false;
     try {
       success = await db.run(
-        "INSERT INTO Choices (language, picks) VALUES (?, ?)",
-        [language, 0]
+        "INSERT INTO Messages (message) VALUES (?)",
+        [message]
       );
     } catch (dbError) {
       console.error(dbError);
@@ -91,7 +82,7 @@ module.exports = {
       );
     } catch (dbError) {
       console.error(dbError);
-    } 
+    }
     return success.changes > 0 ? true : false;
   },
 
