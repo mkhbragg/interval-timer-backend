@@ -31,7 +31,7 @@ fastify.get("/", (request, reply) => {
   reply.status(200).send(data);
 });
 
-// Return the poll options from the database helper script - no auth
+// Return the chat messages from the database helper script - no auth
 fastify.get("/messages", async (request, reply) => {
   let data = {};
   data.chat = await db.getMessages();
@@ -41,7 +41,7 @@ fastify.get("/messages", async (request, reply) => {
   reply.status(status).send(data);
 });
 
-// Add new option (auth)
+// Add new message (auth)
 fastify.post("/message", async (request, reply) => {
   let data = {};
   const auth = authorized(request.headers.admin_key);
@@ -51,7 +51,7 @@ fastify.post("/message", async (request, reply) => {
   reply.status(status).send(data);
 });
 
-// Update count for an option (auth)
+// Update text for an message (auth)
 fastify.put("/message", async (request, reply) => { 
   let data = {};
   const auth = authorized(request.headers.admin_key);
@@ -61,12 +61,12 @@ fastify.put("/message", async (request, reply) => {
   reply.status(status).send(data);
 });
 
-// Delete an option (auth)
-fastify.delete("/option", async (request, reply) => {
+// Delete a message (auth)
+fastify.delete("/message", async (request, reply) => {
   let data = {};
   const auth = authorized(request.headers.admin_key);
-  if(!auth || !request.query || !request.query.language) data.success = false;
-  else data.success = await db.deleteOption(request.query.language);
+  if(!auth || !request.query || !request.query.id) data.success = false;
+  else data.success = await db.deleteMessage(request.query.id);
   const status = data.success ? 201 : auth ? 400 : 401;
   reply.status(status).send(data);
 });

@@ -28,18 +28,19 @@ dbWrapper
     db = dBase;
 
     try {
-      if (!exists) {
+//      if (!exists) {
         await db.run("DROP TABLE Messages");
         await db.run(
           "CREATE TABLE Messages (id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT)"
         );
         let records = [];
         for (let r = 0; r < 5; r++) records.push(faker.hacker.phrase());
-        await db.run(
+        for (let r = 0; r < 5; r++) await db.run("INSERT INTO Messages (message) VALUES (?)", faker.hacker.phrase());
+/*        await db.run(
           "INSERT INTO Messages (message) VALUES (?),(?),(?),(?),(?)",
           records
         );
-      }
+  */    //}
       console.log(await db.all("SELECT * from Messages"));
     } catch (dbError) {
       console.error(dbError);
@@ -57,7 +58,7 @@ module.exports = {
     }
   },
 
-  // Add new option initially set to zero
+  // Add new message to the chat
   addMessage: async message => {
     let success = false;
     try {
@@ -71,14 +72,14 @@ module.exports = {
     return success.changes > 0 ? true : false;
   },
 
-  // Update picks for a language
-  updateOption: async (language, picks) => {
+  // Update message text
+  updateMessage: async (id, message) => {
     let success = false;
     try {
       success = await db.run(
-        "Update Choices SET picks = ? WHERE language = ?",
-        picks,
-        language
+        "Update Messages SET message = ? WHERE id = ?",
+        message,
+        id
       );
     } catch (dbError) {
       console.error(dbError);
@@ -86,13 +87,13 @@ module.exports = {
     return success.changes > 0 ? true : false;
   },
 
-  // Remove option
-  deleteOption: async language => {
+  // Remove message
+  deleteMessage: async id => {
     let success = false;
     try {
       success = await db.run(
-        "Delete from Choices WHERE language = ?",
-        language
+        "Delete from Messages WHERE id = ?",
+        id
       );
     } catch (dbError) {
       console.error(dbError);

@@ -2,9 +2,9 @@
 
 This project includes a [Node.js](https://nodejs.org/en/about/) server script that uses a persistent [SQLite](https://www.sqlite.org) database.
 
-The database stores sample data for coding language preferences, each one with a name and number of votes. The endpoints allow the client to retrieve, add, update, and delete options, using an admin key you can set in the `.env`.
+The database stores chat messages, each one with an ID and string of message text. The endpoints allow the client to retrieve, add, update, and delete messages, using an admin key you can set in the `.env`.
 
-_The home route `/` lists the endpoints in the API. With the Glitch editor open showing the preview on the right, click __Change URL__ and add `options` to the end to see the first `GET` request._
+_The home route `/` lists the endpoints in the API. With the Glitch editor open showing the preview on the right, click __Change URL__ and add `messages` to the end to see the first `GET` request._
 
 ## What's in this project?
 
@@ -37,13 +37,13 @@ You can make requests to the API using curl on the terminal or from any API clie
 
 The following outline indicates requirements for each endpoint:
 
-* `GET /options`
-* `POST /option` 🔒
-  * Include a request __Body__ with a property named `language`
-* `PUT /option` 🔒
-  * Include a request __Body__ with properties `language` (name of option) and `picks` (number to set), e.g. `JavaScript` and `9`
-* `DELETE /option` 🔒
-  * Include a query parameter named `language`
+* `GET /messages`
+* `POST /message` 🔒
+  * Include a request __Body__ with a property named `message`
+* `PUT /message` 🔒
+  * Include a request __Body__ with properties `id` and `message`
+* `DELETE /message` 🔒
+  * Include a query parameter named `id`
 
 🔒 For endpoints requiring auth:
 * Include your admin key value from the `.env` in a request header named `admin_key`.
