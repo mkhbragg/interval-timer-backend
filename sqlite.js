@@ -15,7 +15,7 @@ const dbWrapper = require("sqlite");
 const faker = require("faker"); 
 let i;
 for(i=0; i<10; i++)
-console.log(faker.commerce.productName()+" - "+faker.company.catchPhrase())
+console.log(faker.commerce.productName()+" - "+faker.company.catchPhrase()+" - "+faker.hacker.phrase()+" - "+faker.git.commitMessage())
 let db;
 
 /* 
