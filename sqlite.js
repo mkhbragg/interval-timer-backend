@@ -28,19 +28,16 @@ dbWrapper
     db = dBase;
 
     try {
-//      if (!exists) {
-        await db.run("DROP TABLE Messages");
+      if (!exists) {
         await db.run(
           "CREATE TABLE Messages (id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT)"
         );
-        let records = [];
-        for (let r = 0; r < 5; r++) records.push(faker.hacker.phrase());
-        for (let r = 0; r < 5; r++) await db.run("INSERT INTO Messages (message) VALUES (?)", faker.hacker.phrase());
-/*        await db.run(
-          "INSERT INTO Messages (message) VALUES (?),(?),(?),(?),(?)",
-          records
-        );
-  */    //}
+        for (let r = 0; r < 5; r++)
+          await db.run(
+            "INSERT INTO Messages (message) VALUES (?)",
+            faker.hacker.phrase()
+          );
+      }
       console.log(await db.all("SELECT * from Messages"));
     } catch (dbError) {
       console.error(dbError);
@@ -49,6 +46,7 @@ dbWrapper
 
 // Server script calls these methods to connect to the db
 module.exports = {
+  
   // Get the messages in the database
   getMessages: async () => {
     try {
@@ -58,14 +56,13 @@ module.exports = {
     }
   },
 
-  // Add new message to the chat
+  // Add new message
   addMessage: async message => {
     let success = false;
     try {
-      success = await db.run(
-        "INSERT INTO Messages (message) VALUES (?)",
-        [message]
-      );
+      success = await db.run("INSERT INTO Messages (message) VALUES (?)", [
+        message
+      ]);
     } catch (dbError) {
       console.error(dbError);
     }
@@ -91,10 +88,7 @@ module.exports = {
   deleteMessage: async id => {
     let success = false;
     try {
-      success = await db.run(
-        "Delete from Messages WHERE id = ?",
-        id
-      );
+      success = await db.run("Delete from Messages WHERE id = ?", id);
     } catch (dbError) {
       console.error(dbError);
     }
