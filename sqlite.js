@@ -12,6 +12,10 @@ const dbFile = "./.data/choices.db";
 const exists = fs.existsSync(dbFile);
 const sqlite3 = require("sqlite3").verbose();
 const dbWrapper = require("sqlite");
+const faker = require("faker"); 
+let i;
+for(i=0; i<10; i++)
+console.log(faker.companyfaker.company.bs())
 let db;
 
 /* 

@@ -1,4 +1,5 @@
 dependencies:
+  faker: 5.5.3
   fastify: 3.16.2
   fastify-formbody: 5.0.0
   sqlite: 4.0.23
@@ -260,6 +261,10 @@ packages:
     optional: true
     resolution:
       integrity: sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
+  /faker/5.5.3:
+    dev: false
+    resolution:
+      integrity: sha512-wLTv2a28wjUyWkbnX7u/ABZBkUkIF2fCd73V6P2oFqEGEktDfzWx4UxrSqtPRw0xPRAcjeAOIiJWqZm3pP4u3g==
   /fast-decode-uri-component/1.0.1:
     dev: false
     resolution:
@@ -1182,6 +1187,7 @@ registry: 'https://registry.npmjs.org/'
 shrinkwrapMinorVersion: 9
 shrinkwrapVersion: 3
 specifiers:
+  faker: ^5.5.3
   fastify: ^3.16.2
   fastify-formbody: ^5.0.0
   sqlite: ^4.0.23
