@@ -10,13 +10,13 @@ _The home route `/` lists the endpoints in the API. With the Glitch editor open 
 
 ← `README.md`: That’s this file, where you can tell people what your cool website does and how you built it.
 
-← `server.js`: The Node.js server script for your new site. The JavaScript defines the endpoints in the site API. The API processes requests, connects to the database using the `sqlite` script in `src`, and sends info back to the client.
+← `server.js`: The Node.js server defines the endpoints in the site API, processing requests, connecting to the database using the `sqlite.js` script, and sending info back to the client.
 
 ← `sqlite.js`: The database script handles setting up and connecting to the SQLite database. The `server.js` API endpoints call the functions in the database script to manage the data.
 
 When the app runs, the scripts build the database:
 
-← `.data/choices.db`: Your database is created and placed in the `.data` folder, a hidden directory whose contents aren’t copied when a project is remixed. You can see the contents of `.data` in the Glitch console by selecting __Tools__ >  __Logs__.
+← `.data/chat.db`: Your database is created and placed in the `.data` folder, a hidden directory whose contents aren’t copied when a project is remixed. You can see the data in the Glitch Log when the scripts first execute.
 
 ← `package.json`: The NPM packages for your project's dependencies.
 
@@ -24,7 +24,7 @@ When the app runs, the scripts build the database:
 
 ## Setting up your admin key
 
-The API allows the user to update data if a valid key is provided. This is a simplified example of auth that checks if the user entered key matches the one in the `.env`.
+The API allows the client to update data if a valid key is provided. This is a simplified example of auth that checks if the submitted key matches the one in the `.env`.
 
 To set your app up to support auth:
 
@@ -47,8 +47,6 @@ The following outline indicates requirements for each endpoint:
 
 🔒 For endpoints requiring auth:
 * Include your admin key value from the `.env` in a request header named `admin_key`.
-
-_Note that the database management in this project is very minimal and doesn't e.g. check for duplicates / existing records before attempting updates._
 
 ![Glitch](https://cdn.glitch.com/a9975ea6-8949-4bab-addb-8a95021dc2da%2FLogo_Color.svg?v=1602781328576)
 

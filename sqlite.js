@@ -3,8 +3,6 @@
  *
  * The sample data is for a chat log with one table:
  * Messages: id + message text
- *
- * NOTE: Post, update, and delete methods do not check if record exists
  */
 
 const fs = require("fs");
@@ -15,10 +13,7 @@ const dbWrapper = require("sqlite");
 const faker = require("faker");
 let db;
 
-/* 
-Sqlite wrapper for async / await connections
-- https://www.npmjs.com/package/sqlite
-*/
+//SQLite wrapper for async / await connections https://www.npmjs.com/package/sqlite
 dbWrapper
   .open({
     filename: dbFile,
