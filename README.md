@@ -29,7 +29,7 @@ The API allows the user to update data if a valid key is provided. This is a sim
 To set your app up to support auth:
 
 * In your `.env` file, find the variable named `ADMIN_KEY` and give it a text string as a value.
-* Pass the value with requests to the API in a header named `admin_key`.
+* Pass the value with requests in an `admin_key` header.
 
 ## Making requests
 
