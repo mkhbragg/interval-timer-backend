@@ -16,7 +16,7 @@ const faker = require("faker");
 let db;
 
 /* 
-We're using the sqlite wrapper so that we can make async / await connections
+Sqlite wrapper for async / await connections
 - https://www.npmjs.com/package/sqlite
 */
 dbWrapper

@@ -10,10 +10,6 @@ _The home route `/` lists the endpoints in the API. With the Glitch editor open 
 
 ← `README.md`: That’s this file, where you can tell people what your cool website does and how you built it.
 
-← `package.json`: The NPM packages for your project's dependencies.
-
-← `.env`: The environment is cleared when you initially remix the project, but you can add a new env variable value to set up an admin key.
-
 ← `server.js`: The Node.js server script for your new site. The JavaScript defines the endpoints in the site API. The API processes requests, connects to the database using the `sqlite` script in `src`, and sends info back to the client.
 
 ← `sqlite.js`: The database script handles setting up and connecting to the SQLite database. The `server.js` API endpoints call the functions in the database script to manage the data.
@@ -22,18 +18,22 @@ When the app runs, the scripts build the database:
 
 ← `.data/choices.db`: Your database is created and placed in the `.data` folder, a hidden directory whose contents aren’t copied when a project is remixed. You can see the contents of `.data` in the Glitch console by selecting __Tools__ >  __Logs__.
 
+← `package.json`: The NPM packages for your project's dependencies.
+
+← `.env`: The environment is cleared when you initially remix the project, but you can add and edit.
+
 ## Setting up your admin key
 
 The API allows the user to update data if a valid key is provided. This is a simplified example of auth that checks if the user entered key matches the one in the `.env`.
 
-To set your app up to allow clearing the history:
+To set your app up to support auth:
 
 * In your `.env` file, find the variable named `ADMIN_KEY` and give it a text string as a value.
 * Pass the value with requests to the API in a header named `admin_key`.
 
 ## Making requests
 
-You can make requests to the API using curl on the terminal or from any API client. Grab your API base URL when you remix the project–you can get it by clicking __Show__.
+You can make requests to the API using curl on the command line or from any API client. Grab your API base URL when you remix the project–you can get it by clicking __Show__.
 
 The following outline indicates requirements for each endpoint:
 
