@@ -1,5 +1,5 @@
 {
-  "name": "hello-sqlite",
+  "name": "glitch-blank-sqlite",
   "version": "0.0.1",
   "description": "A Node app with SQLite database, instantly up and running.",
   "main": "server.js",
@@ -17,7 +17,7 @@
     "node": "12.x"
   },
   "repository": {
-    "url": "https://glitch.com/edit/#!/hello-sqlite"
+    "url": "https://glitch.com/edit/#!/glitch-blank-sqlite"
   },
   "license": "MIT",
   "keywords": [
