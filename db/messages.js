@@ -5,10 +5,7 @@
  * Messages: id + message text
  */
 
-const fs = require("fs");
-const dbFile = "./.data/chat.db";
-const exists = fs.existsSync(dbFile);
-const sqlite3 = require("sqlite3").verbose();
+
 const dbWrapper = require("sqlite");
 const faker = require("faker");
 let db;
