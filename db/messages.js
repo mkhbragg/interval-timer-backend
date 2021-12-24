@@ -86,4 +86,5 @@ module.exports = {
       console.error(dbError);
     }
     return success.changes > 0 ? true : false;
-  }};
+  }
+};

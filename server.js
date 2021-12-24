@@ -11,7 +11,7 @@ const fastify = require("fastify")({
 
 fastify.register(require("fastify-formbody"));
 
-const db = require("./db/sqlite.js");
+const db = require("./db/messages.js");
 const errorMessage =
   "Whoops! Error connecting to the database–please try again!";
 
