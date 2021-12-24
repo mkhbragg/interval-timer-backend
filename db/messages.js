@@ -13,32 +13,6 @@ const dbWrapper = require("sqlite");
 const faker = require("faker");
 let db;
 
-//SQLite wrapper for async / await connections https://www.npmjs.com/package/sqlite
-dbWrapper
-  .open({
-    filename: dbFile,
-    driver: sqlite3.Database
-  })
-  .then(async dBase => {
-    db = dBase;
-
-    try {
-      if (!exists) {
-        await db.run(
-          "CREATE TABLE Messages (id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT)"
-        );
-        for (let r = 0; r < 5; r++)
-          await db.run(
-            "INSERT INTO Messages (message) VALUES (?)",
-            faker.hacker.phrase()
-          );
-      }
-      console.log(await db.all("SELECT * from Messages"));
-    } catch (dbError) {
-      console.error(dbError);
-    }
-  });
-
 // Server script calls these methods to connect to the db
 module.exports = {
   
@@ -90,3 +64,4 @@ module.exports = {
     return success.changes > 0 ? true : false;
   }
 };
+

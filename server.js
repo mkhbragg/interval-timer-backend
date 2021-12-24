@@ -11,7 +11,7 @@ const fastify = require("fastify")({
 
 fastify.register(require("fastify-formbody"));
 
-const db = require("./sqlite.js");
+const db = require("./db/sqlite.js");
 const errorMessage =
   "Whoops! Error connecting to the database–please try again!";
 
@@ -36,7 +36,7 @@ fastify.get("/messages", async (request, reply) => {
   let data = {};
   data.chat = await db.getMessages();
   console.log(data.chat);
-  if(!data.chat) data.error = errorMessage;
+  if (!data.chat) data.error = errorMessage;
   const status = data.error ? 400 : 200;
   reply.status(status).send(data);
 });
@@ -45,18 +45,23 @@ fastify.get("/messages", async (request, reply) => {
 fastify.post("/message", async (request, reply) => {
   let data = {};
   const auth = authorized(request.headers.admin_key);
-  if(!auth || !request.body || !request.body.message) data.success = false;
-  else if(auth) data.success = await db.addMessage(request.body.message);
+  if (!auth || !request.body || !request.body.message) data.success = false;
+  else if (auth) data.success = await db.addMessage(request.body.message);
   const status = data.success ? 201 : auth ? 400 : 401;
   reply.status(status).send(data);
 });
 
 // Update text for an message (auth)
-fastify.put("/message", async (request, reply) => { 
+fastify.put("/message", async (request, reply) => {
   let data = {};
   const auth = authorized(request.headers.admin_key);
-  if(!auth || !request.body || !request.body.id || !request.body.message) data.success = false;
-  else data.success = await db.updateMessage(request.body.id, request.body.message); 
+  if (!auth || !request.body || !request.body.id || !request.body.message)
+    data.success = false;
+  else
+    data.success = await db.updateMessage(
+      request.body.id,
+      request.body.message
+    );
   const status = data.success ? 201 : auth ? 400 : 401;
   reply.status(status).send(data);
 });
@@ -65,7 +70,7 @@ fastify.put("/message", async (request, reply) => {
 fastify.delete("/message", async (request, reply) => {
   let data = {};
   const auth = authorized(request.headers.admin_key);
-  if(!auth || !request.query || !request.query.id) data.success = false;
+  if (!auth || !request.query || !request.query.id) data.success = false;
   else data.success = await db.deleteMessage(request.query.id);
   const status = data.success ? 201 : auth ? 400 : 401;
   reply.status(status).send(data);
